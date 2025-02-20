@@ -1,3 +1,7 @@
+using BookApi.Models;
+using Microsoft.Extensions.Options;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
@@ -43,4 +47,17 @@ app.Run();
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+}
+
+public void ConfigureServices(IServiceCollection services)
+{
+    services.Configure<BookstoreDatabaseSettings>(
+        Configuration.GetSection(nameof(BookstoreDatabaseSettings)));
+
+    services.AddSingleton<IBookstoreDatabaseSettings>(sp =>
+        sp.GetRequiredService<IOptions<BookstoreDatabaseSettings>>().Value);
+
+    services.AddSingleton<BookService>();
+
+    services.AddControllers();
 }
