@@ -21,5 +21,16 @@ namespace BookApi.Controllers
         {
             return Ok(books);
         }
+
+        [HttpGet("{id}")]
+        public ActionResult<BookApi> GetBook(int id)
+        {
+            var book = books.FirstOrDefault(b => b.Id == id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+            return Ok(book);
+        }
     }
 }
