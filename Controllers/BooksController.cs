@@ -23,9 +23,13 @@ namespace BookApi.Controllers
         }
 
         [HttpGet("{title}")]
-        public ActionResult<Book> GetBook(string Title)
+        public ActionResult<Book> GetBook(string title)
         {
-            var book = books.FirstOrDefault(b => b.Title == Title);
+            if (string.IsNullOrEmpty(title))
+            {
+                return BadRequest("Title cannot be null or empty.");
+            }
+            var book = books.FirstOrDefault(b => b.Title.Trim().Equals(title.Trim(), StringComparison.OrdinalIgnoreCase));
             if (book == null)
             {
                 return NotFound();
