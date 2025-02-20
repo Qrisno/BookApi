@@ -37,6 +37,16 @@ namespace BookApi.Controllers
         [HttpPost]
         public ActionResult<Book> AddBook(Book book)
         {
+            if (book == null)
+            {
+                return BadRequest();
+            }
+
+            var bookInList = books.Find(b => b.Title == book.Title);
+            if (bookInList != null)
+            {
+                return BadRequest("Book Already Exists");
+            }
             books.Add(book);
             return Ok(books);
 
@@ -122,6 +132,17 @@ namespace BookApi.Controllers
             }
 
             return Ok(books);
+        }
+
+        [HttpGet("popular")]
+        public ActionResult<Book> GetPopularBookTitles()
+        {
+            if (books.Count == 0)
+            {
+                return BadRequest("No Books Exists");
+            }
+            var orderedTitles = books.OrderBy(b => b.ViewCount).Select(b => b.Title).ToList();
+            return Ok(orderedTitles);
         }
     }
 }
