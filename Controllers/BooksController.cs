@@ -34,6 +34,9 @@ namespace BookApi.Controllers
             {
                 return NotFound();
             }
+            books.Remove(book);
+            book.ViewCount = (int.Parse(book.ViewCount) + 1).ToString();
+            books.Add(book);
             return Ok(book);
         }
 
@@ -45,6 +48,8 @@ namespace BookApi.Controllers
             {
                 return BadRequest();
             }
+
+            book.ViewCount = "0";
 
             var bookInList = books.Find(b => b.Title == book.Title);
             if (bookInList != null)
