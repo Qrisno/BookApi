@@ -35,9 +35,22 @@ namespace BookApi.Controllers
 
 
         [HttpPost]
-        public ActionResult<Book> AddBooks(Book book)
+        public ActionResult<Book> AddBook(Book book)
         {
+            books.Add(book)
+            return CreatedAtAction();
 
+        }
+
+
+        [HttpPost]
+        public ActionResult<Book[]> AddBooks(Book[] books)
+        {
+            foreach (var book in books)
+            {
+                books.Add(book);
+            }
+            return CreatedAtAction();
         }
 
 
