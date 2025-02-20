@@ -73,15 +73,13 @@ namespace BookApi.Controllers
             if (bookFound != null)
             {
                 books.Remove(bookFound);
+                updatedBook.Title = title;
                 books.Add(updatedBook);
                 return Ok(books);
             }
 
 
             return NotFound();
-
-
-
         }
 
 
