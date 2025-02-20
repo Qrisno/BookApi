@@ -10,7 +10,7 @@ namespace BookApi.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private static List<BookApi> books = new List<Book>
+        private static List<Book> books = new List<Book>
         {
             new Book{Title = "The Great Gatsby", PublicationYear = "1925", AuthorName = "F. Scott Fitzgerald", ViewCount = "100"},
             new Book{Title = "Vefxistyaosani", PublicationYear = "1200", AuthorName = "Shota", ViewCount = "50"},
@@ -23,7 +23,7 @@ namespace BookApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<BookApi> GetBook(int id)
+        public ActionResult<Book> GetBook(int id)
         {
             var book = books.FirstOrDefault(b => b.Id == id);
             if (book == null)
@@ -32,5 +32,7 @@ namespace BookApi.Controllers
             }
             return Ok(book);
         }
+
+
     }
 }

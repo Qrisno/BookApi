@@ -1,6 +1,6 @@
 namespace BookApi.Models
 {
-    public class BookApi
+    public class Book
     {
         public string Title { get; set; }
         public string PublicationYear { get; set; }
