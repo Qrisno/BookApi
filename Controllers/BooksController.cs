@@ -23,14 +23,21 @@ namespace BookApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Book> GetBook(int id)
+        public ActionResult<Book> GetBook(string Title)
         {
-            var book = books.FirstOrDefault(b => b.Id == id);
+            var book = books.FirstOrDefault(b => b.Title == Title);
             if (book == null)
             {
                 return NotFound();
             }
             return Ok(book);
+        }
+
+
+        [HttpPost]
+        public ActionResult<Book> AddBooks(Book book)
+        {
+
         }
 
 
