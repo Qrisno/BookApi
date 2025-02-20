@@ -14,7 +14,7 @@ namespace BookApi.Controllers
         {
             new Book{Title = "The Great Gatsby", PublicationYear = "1925", AuthorName = "F. Scott Fitzgerald", ViewCount = "100"},
             new Book{Title = "Vefxistyaosani", PublicationYear = "1200", AuthorName = "Shota", ViewCount = "50"},
-        }
+        };
 
         [HttpGet]
         public ActionResult<IEnumerable<Book>> GetAllBooks()
@@ -38,25 +38,25 @@ namespace BookApi.Controllers
         public ActionResult<Book> AddBook(Book book)
         {
             books.Add(book);
-            return CreatedAtAction();
+            return Ok(books);
 
         }
 
 
         [HttpPost("bulk")]
-        public ActionResult<Book[]> AddBooks(Book[] books)
+        public ActionResult<Book[]> AddBooks(Book[] booksForAdding)
         {
-            if (books.Length == 0)
+            if (books.Count == 0)
             {
                 return BadRequest();
             }
 
 
-            foreach (var book in books)
+            foreach (var book in booksForAdding)
             {
                 books.Add(book);
             }
-            return CreatedAtAction();
+            return Ok(books);
         }
 
 
