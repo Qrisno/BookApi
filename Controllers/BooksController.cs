@@ -82,6 +82,46 @@ namespace BookApi.Controllers
             return NotFound();
         }
 
+        [HttpDelete("{title}")]
+        public ActionResult<Book> DeleteBook(string title)
+        {
+            if (string.IsNullOrEmpty(title))
+            {
+                return BadRequest();
+            }
+            var bookFound = books.Find(books => books.Title == title);
+            if (bookFound != null)
+            {
+                books.Remove(bookFound);
+                return Ok(books);
+            }
 
+            return NotFound();
+        }
+
+        [HttpDelete]
+        public ActionResult<IEnumerable<Book>> DeleteBook([FromQuery] string[] titles)
+        {
+            if (titles == null || titles.Length == 0)
+            {
+                return BadRequest("No titles provided.");
+            }
+
+
+
+            foreach (var title in titles)
+            {
+                var bookFound = books.FirstOrDefault(b => b.Title == title);
+                if (bookFound != null)
+                {
+                    books.Remove(bookFound);
+
+                }
+
+                return NotFound($"No books found with the provided titles: {title}");
+            }
+
+            return Ok(books);
+        }
     }
 }
