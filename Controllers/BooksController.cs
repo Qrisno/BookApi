@@ -22,7 +22,7 @@ namespace BookApi.Controllers
             return Ok(books);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{title}")]
         public ActionResult<Book> GetBook(string Title)
         {
             var book = books.FirstOrDefault(b => b.Title == Title);
@@ -57,6 +57,31 @@ namespace BookApi.Controllers
                 books.Add(book);
             }
             return Ok(books);
+        }
+
+        [HttpPost("title")]
+        public ActionResult<Book> updateBook(string title, Book updatedBook)
+        {
+
+
+            if (string.IsNullOrEmpty(title) || updatedBook == null)
+            {
+                return BadRequest();
+            }
+
+            var bookFound = books.Find(books => books.Title == title);
+            if (bookFound != null)
+            {
+                books.Remove(bookFound);
+                books.Add(updatedBook);
+                return Ok(books);
+            }
+
+
+            return NotFound();
+
+
+
         }
 
 
