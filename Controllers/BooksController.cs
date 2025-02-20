@@ -37,7 +37,7 @@ namespace BookApi.Controllers
         [HttpPost]
         public ActionResult<Book> AddBook(Book book)
         {
-            books.Add(book)
+            books.Add(book);
             return CreatedAtAction();
 
         }
