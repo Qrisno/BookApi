@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using BookApi.Models;
 using System.Collections.Generic;
 using System.Linq;
+using BookApi.Services;
 
 
 namespace BookApi.Controllers
@@ -10,15 +11,17 @@ namespace BookApi.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private static List<Book> books = new List<Book>
+        private readonly BookService _bookService;
+        public BooksController(BookService bookService)
         {
-            new Book{Title = "The Great Gatsby", PublicationYear = "1925", AuthorName = "F. Scott Fitzgerald", ViewCount = "100"},
-            new Book{Title = "Vefxistyaosani", PublicationYear = "1200", AuthorName = "Shota", ViewCount = "50"},
-        };
+            this._bookService = bookService;
+
+        }
 
         [HttpGet]
         public ActionResult<IEnumerable<Book>> GetAllBooks()
         {
+            var books = _bookService.Get();
             return Ok(books);
         }
 
@@ -29,14 +32,14 @@ namespace BookApi.Controllers
             {
                 return BadRequest("Title cannot be null or empty.");
             }
-            var book = books.FirstOrDefault(b => b.Title.Trim().Equals(title.Trim(), StringComparison.OrdinalIgnoreCase));
+            var book = this._bookService.Get().FirstOrDefault(b => b.Title.Trim().Equals(title.Trim(), StringComparison.OrdinalIgnoreCase));
             if (book == null)
             {
                 return NotFound();
             }
-            books.Remove(book);
+            _bookService.Remove(book.Id);
             book.ViewCount = (int.Parse(book.ViewCount) + 1).ToString();
-            books.Add(book);
+            _bookService.Create(book);
             return Ok(book);
         }
 
@@ -51,13 +54,13 @@ namespace BookApi.Controllers
 
             book.ViewCount = "0";
 
-            var bookInList = books.Find(b => b.Title == book.Title);
+            var bookInList = _bookService.Get().Find(b => b.Title == book.Title);
             if (bookInList != null)
             {
                 return BadRequest("Book Already Exists");
             }
-            books.Add(book);
-            return Ok(books);
+            _bookService.Create(book);
+            return Ok(_bookService.Get());
 
         }
 
@@ -65,7 +68,7 @@ namespace BookApi.Controllers
         [HttpPost("bulk")]
         public ActionResult<Book[]> AddBooks(Book[] booksForAdding)
         {
-            if (books.Count == 0)
+            if (_bookService.Get().Count == 0)
             {
                 return BadRequest();
             }
@@ -73,9 +76,9 @@ namespace BookApi.Controllers
 
             foreach (var book in booksForAdding)
             {
-                books.Add(book);
+                _bookService.Create(book);
             }
-            return Ok(books);
+            return Ok(_bookService.Get());
         }
 
         [HttpPost("title")]
@@ -88,13 +91,13 @@ namespace BookApi.Controllers
                 return BadRequest();
             }
 
-            var bookFound = books.Find(books => books.Title == title);
+            var bookFound = _bookService.Get().Find(book => book.Title == title);
             if (bookFound != null)
             {
-                books.Remove(bookFound);
+                _bookService.Remove(bookFound.Id);
                 updatedBook.Title = title;
-                books.Add(updatedBook);
-                return Ok(books);
+                _bookService.Create(updatedBook);
+                return Ok(_bookService.Get());
             }
 
 
@@ -108,11 +111,11 @@ namespace BookApi.Controllers
             {
                 return BadRequest();
             }
-            var bookFound = books.Find(books => books.Title == title);
+            var bookFound = _bookService.Get().Find(books => books.Title == title);
             if (bookFound != null)
             {
-                books.Remove(bookFound);
-                return Ok(books);
+                _bookService.Remove(bookFound.Id);
+                return Ok(_bookService.Get());
             }
 
             return NotFound();
@@ -130,27 +133,27 @@ namespace BookApi.Controllers
 
             foreach (var title in titles)
             {
-                var bookFound = books.FirstOrDefault(b => b.Title == title);
+                var bookFound = _bookService.Get().FirstOrDefault(b => b.Title == title);
                 if (bookFound != null)
                 {
-                    books.Remove(bookFound);
+                    _bookService.Remove(bookFound.Id);
 
                 }
 
                 return NotFound($"No books found with the provided titles: {title}");
             }
 
-            return Ok(books);
+            return Ok(_bookService.Get());
         }
 
         [HttpGet("popular")]
         public ActionResult<Book> GetPopularBookTitles()
         {
-            if (books.Count == 0)
+            if (_bookService.Get().Count == 0)
             {
                 return BadRequest("No Books Exists");
             }
-            var orderedTitles = books.OrderBy(b => b.ViewCount).Select(b => b.Title).ToList();
+            var orderedTitles = _bookService.Get().OrderBy(b => b.ViewCount).Select(b => b.Title).ToList();
             return Ok(orderedTitles);
         }
     }
