@@ -46,6 +46,10 @@ namespace BookApi.Controllers
         [HttpPost]
         public ActionResult<Book[]> AddBooks(Book[] books)
         {
+            if (books.Length == 0)
+            {
+                return BadRequest();
+            }
             foreach (var book in books)
             {
                 books.Add(book);
