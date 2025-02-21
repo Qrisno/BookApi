@@ -1,4 +1,5 @@
 using BookApi.Models;
+using BookApi.Services;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<IBooksDBSettings, BooksDBSettings>();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();

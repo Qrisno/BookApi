@@ -12,9 +12,9 @@ namespace BookApi.Controllers
     public class BooksController : ControllerBase
     {
         private readonly BookService _bookService;
-        public BooksController(BookService bookService)
+        public BooksController()
         {
-            this._bookService = bookService;
+            this._bookService = new BookService();
 
         }
 
