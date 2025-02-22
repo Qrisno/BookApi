@@ -38,7 +38,19 @@ namespace BookApi.Controllers
             }
             book.ViewCount = (int.Parse(book.ViewCount) + 1).ToString();
             _bookRepository.Update(book.Id, book);
+            var popularityScore = CalculatePopularityScore(book);
+            book.PopularityScore = popularityScore;
+
             return Ok(book);
+        }
+
+        private int CalculatePopularityScore(Book book)
+        {
+
+            int viewCount = int.Parse(book.ViewCount);
+            int publicationYear = int.Parse(book.PublicationYear);
+            int currentYear = DateTime.Now.Year;
+            return viewCount * 2 + (currentYear - publicationYear);
         }
 
         [HttpPost]

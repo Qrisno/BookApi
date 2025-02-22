@@ -15,6 +15,9 @@ namespace BookApi.Models
         public string AuthorName { get; set; }
         public string ViewCount { get; set; } = "0";
         public bool IsDeleted { get; set; } = false;
+
+        [BsonIgnore]
+        public double PopularityScore { get; set; }
     }
 
 
