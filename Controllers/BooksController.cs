@@ -6,7 +6,7 @@ using BookApi.Data;
 using BookApi.Services;
 namespace BookApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("BooksApi")]
     [ApiController]
     public class BooksController : ControllerBase
     {
@@ -19,14 +19,26 @@ namespace BookApi.Controllers
             _bookService = bookService;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllBooks")]
         public ActionResult<IEnumerable<Book>> GetAllBooks()
         {
             var books = _bookRepository.Get();
             return Ok(books);
         }
 
-        [HttpGet("{title}")]
+        [HttpGet("GetPopularBooks")]
+        public ActionResult<IEnumerable<string>> GetPopularBookTitles()
+        {
+            var books = _bookRepository.Get();
+            if (books.Count == 0)
+            {
+                return BadRequest("No Books Exist");
+            }
+            var orderedTitles = books.OrderByDescending(b => int.Parse(b.ViewCount)).Select(b => b.Title).ToList();
+            return Ok(orderedTitles);
+        }
+
+        [HttpGet("GetBook/{title}")]
         public ActionResult<Book> GetBook(string title)
         {
             if (string.IsNullOrEmpty(title))
@@ -46,9 +58,7 @@ namespace BookApi.Controllers
             return Ok(book);
         }
 
-
-
-        [HttpPost]
+        [HttpPost("AddBook")]
         public ActionResult<Book> AddBook(BookInput book)
         {
             if (book == null)
@@ -68,7 +78,7 @@ namespace BookApi.Controllers
             return Ok(book);
         }
 
-        [HttpPost("bulk")]
+        [HttpPost("AddBooks")]
         public ActionResult<IEnumerable<Book>> AddBooks(Book[] booksForAdding)
         {
             if (booksForAdding == null || booksForAdding.Length == 0)
@@ -83,7 +93,7 @@ namespace BookApi.Controllers
             return Ok(booksForAdding);
         }
 
-        [HttpPost("title")]
+        [HttpPost("UpdateBook")]
         public ActionResult<Book> UpdateBook(string title, Book updatedBook)
         {
             if (string.IsNullOrEmpty(title) || updatedBook == null)
@@ -102,7 +112,7 @@ namespace BookApi.Controllers
             return NotFound();
         }
 
-        [HttpDelete("{title}")]
+        [HttpDelete("DeleteBook/{title}")]
         public ActionResult<Book> DeleteBook(string title)
         {
             if (string.IsNullOrEmpty(title))
@@ -120,7 +130,7 @@ namespace BookApi.Controllers
             return NotFound();
         }
 
-        [HttpDelete]
+        [HttpDelete("DeleteBooks")]
         public ActionResult<IEnumerable<Book>> DeleteBooks([FromQuery] string[] titles)
         {
             if (titles == null || titles.Length == 0)
@@ -148,16 +158,7 @@ namespace BookApi.Controllers
             return Ok(booksRemoved);
         }
 
-        [HttpGet("popular")]
-        public ActionResult<IEnumerable<string>> GetPopularBookTitles()
-        {
-            var books = _bookRepository.Get();
-            if (books.Count == 0)
-            {
-                return BadRequest("No Books Exist");
-            }
-            var orderedTitles = books.OrderByDescending(b => int.Parse(b.ViewCount)).Select(b => b.Title).ToList();
-            return Ok(orderedTitles);
-        }
+
+
     }
 }
