@@ -16,8 +16,8 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
     Console.WriteLine($"📌 MongoDB Connection String (From DI): {settings.ConnectionString}");
     return new MongoClient(settings.ConnectionString);
 });
-// Register BookService
-builder.Services.AddScoped<BookService>();
+// Register BookDBService
+builder.Services.AddScoped<BookDBService>();
 // Register BookRepository
 builder.Services.AddScoped<BookRepository>();
 

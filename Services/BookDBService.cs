@@ -6,11 +6,11 @@ using Microsoft.Extensions.Options;
 
 namespace BookApi.Services
 {
-    public class BookService
+    public class BookDBService
     {
         private readonly IMongoCollection<Book> _books;
 
-        public BookService(IOptions<BookstoreDatabaseSettings> settings)
+        public BookDBService(IOptions<BookstoreDatabaseSettings> settings)
         {
             var client = new MongoClient(settings.Value.ConnectionString);
             var database = client.GetDatabase(settings.Value.DatabaseName);
