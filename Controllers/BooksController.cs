@@ -42,21 +42,22 @@ namespace BookApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Book> AddBook(Book book)
+        public ActionResult<Book> AddBook(BookInput book)
         {
             if (book == null)
             {
                 return BadRequest();
             }
 
-            book.ViewCount = "0";
+
 
             var bookInList = _bookRepository.Get().Find(b => b.Title == book.Title);
             if (bookInList != null)
             {
                 return BadRequest("Book Already Exists");
             }
-            _bookRepository.Create(book);
+            var newBook = new Book { Title = book.Title, PublicationYear = book.PublicationYear, AuthorName = book.AuthorName };
+            _bookRepository.Create(newBook);
             return Ok(book);
         }
 
@@ -104,7 +105,8 @@ namespace BookApi.Controllers
             var bookFound = _bookRepository.Get().FirstOrDefault(b => b.Title == title);
             if (bookFound != null)
             {
-                _bookRepository.Remove(bookFound.Id);
+                bookFound.IsDeleted = true;
+                _bookRepository.Update(bookFound.Id, bookFound);
                 return Ok(bookFound);
             }
 
@@ -126,8 +128,8 @@ namespace BookApi.Controllers
                 var bookFound = _bookRepository.Get().FirstOrDefault(b => b.Title == title);
                 if (bookFound != null)
                 {
-                    _bookRepository.Remove(bookFound.Id);
-                    booksRemoved.Add(bookFound);
+                    bookFound.IsDeleted = true;
+                    _bookRepository.Update(bookFound.Id, bookFound);
                 }
             }
 

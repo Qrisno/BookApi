@@ -15,6 +15,8 @@ namespace BookApi.Data
             var database = client.GetDatabase(settings.Value.DatabaseName);
 
             _books = database.GetCollection<Book>(settings.Value.BooksCollectionName);
+
+            AddInitialDataToDB();
         }
 
         public List<Book> Get() =>

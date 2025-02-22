@@ -7,11 +7,24 @@ namespace BookApi.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+        [BsonIgnoreIfDefault]
         public string Id { get; set; }
 
         public string Title { get; set; }
         public string PublicationYear { get; set; }
         public string AuthorName { get; set; }
-        public string ViewCount { get; set; }
+        public string ViewCount { get; set; } = "0";
+        public bool IsDeleted { get; set; } = false;
     }
+
+
+    public class BookInput
+    {
+
+        public string Title { get; set; }
+        public string PublicationYear { get; set; }
+        public string AuthorName { get; set; }
+    }
+
+
 }
