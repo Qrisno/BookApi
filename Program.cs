@@ -18,6 +18,8 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
 });
 // Register BookDBService
 builder.Services.AddScoped<BookDBService>();
+//Register BookService
+builder.Services.AddScoped<BookService>();
 // Register BookRepository
 builder.Services.AddScoped<BookRepository>();
 

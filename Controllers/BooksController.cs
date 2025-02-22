@@ -3,7 +3,7 @@ using BookApi.Models;
 using System.Collections.Generic;
 using System.Linq;
 using BookApi.Data;
-
+using BookApi.Services;
 namespace BookApi.Controllers
 {
     [Route("api/[controller]")]
@@ -11,10 +11,12 @@ namespace BookApi.Controllers
     public class BooksController : ControllerBase
     {
         private readonly BookRepository _bookRepository;
+        private readonly BookService _bookService;
 
-        public BooksController(BookRepository bookRepository)
+        public BooksController(BookRepository bookRepository, BookService bookService)
         {
             _bookRepository = bookRepository;
+            _bookService = bookService;
         }
 
         [HttpGet]
@@ -38,20 +40,13 @@ namespace BookApi.Controllers
             }
             book.ViewCount = (int.Parse(book.ViewCount) + 1).ToString();
             _bookRepository.Update(book.Id, book);
-            var popularityScore = CalculatePopularityScore(book);
+            var popularityScore = _bookService.CalculatePopularityScore(book);
             book.PopularityScore = popularityScore;
 
             return Ok(book);
         }
 
-        private int CalculatePopularityScore(Book book)
-        {
 
-            int viewCount = int.Parse(book.ViewCount);
-            int publicationYear = int.Parse(book.PublicationYear);
-            int currentYear = DateTime.Now.Year;
-            return viewCount * 2 + (currentYear - publicationYear);
-        }
 
         [HttpPost]
         public ActionResult<Book> AddBook(BookInput book)
