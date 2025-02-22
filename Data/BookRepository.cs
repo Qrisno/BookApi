@@ -2,6 +2,7 @@ using BookApi.Models;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Options;
 
 namespace BookApi.Data
 {
@@ -9,12 +10,11 @@ namespace BookApi.Data
     {
         private readonly IMongoCollection<Book> _books;
 
-        public BookRepository(IBooksDBSettings settings)
+        public BookRepository(IOptions<BookstoreDatabaseSettings> settings, IMongoClient client)
         {
-            var client = new MongoClient(settings.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
+            var database = client.GetDatabase(settings.Value.DatabaseName);
 
-            _books = database.GetCollection<Book>(settings.BooksCollectionName);
+            _books = database.GetCollection<Book>(settings.Value.BooksCollectionName);
         }
 
         public List<Book> Get() =>

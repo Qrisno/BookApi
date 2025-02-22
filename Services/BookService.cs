@@ -1,6 +1,7 @@
 using BookApi.Models;
 using MongoDB.Driver;
 using System.Collections.Generic;
+using Microsoft.Extensions.Options;
 
 
 namespace BookApi.Services
@@ -9,12 +10,12 @@ namespace BookApi.Services
     {
         private readonly IMongoCollection<Book> _books;
 
-        public BookService(IBooksDBSettings settings)
+        public BookService(IOptions<BookstoreDatabaseSettings> settings)
         {
-            var client = new MongoClient(settings.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
+            var client = new MongoClient(settings.Value.ConnectionString);
+            var database = client.GetDatabase(settings.Value.DatabaseName);
 
-            _books = database.GetCollection<Book>(settings.BooksCollectionName);
+            _books = database.GetCollection<Book>(settings.Value.BooksCollectionName);
 
         }
 

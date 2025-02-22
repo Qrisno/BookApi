@@ -7,11 +7,8 @@ using MongoDB.Driver;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure MongoDB settings
-builder.Services.Configure<IBooksDBSettings>(
+builder.Services.Configure<BookstoreDatabaseSettings>(
     builder.Configuration.GetSection(nameof(BookstoreDatabaseSettings)));
-
-builder.Services.AddSingleton<IBooksDBSettings>(sp =>
-    sp.GetRequiredService<IOptions<BookstoreDatabaseSettings>>().Value);
 
 builder.Services.AddSingleton<IMongoClient>(sp =>
 {
